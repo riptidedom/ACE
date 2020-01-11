@@ -520,7 +520,6 @@ namespace ACE.Server.Managers
                                                                  "if FALSE, players start with mastery of 1 melee and 1 ranged weapon type based on heritage, and can later re-select these 2 masteries")),
                 ("use_wield_requirements", new Property<bool>(true, "disable this to bypass wield requirements. mostly for dev debugging")),
                 ("world_closed", new Property<bool>(false, "enable this to startup world as a closed to players world")),
-                ("world_closed", new Property<bool>(false, "enable this to startup world as a closed to players world")),
                 ("global_pk_kill_messages", new Property<bool>(false, "enable this to make PK kills a global death message.")),
                 ("web_portal_api_killshot_on", new Property<bool>(true, "enable the web API for Killshots"))                
                 );
@@ -565,7 +564,6 @@ namespace ACE.Server.Managers
                 ("popup_header", new Property<string>("Welcome to Asheron's Call!", "Welcome message displayed when you log in")),
                 ("popup_welcome", new Property<string>("To begin your training, speak to the Society Greeter. Walk up to the Society Greeter using the 'W' key, then double-click on her to initiate a conversation.", "Welcome message popup in training halls")),
                 ("popup_motd", new Property<string>("", "Popup message of the day")),
-                ("server_motd", new Property<string>("", "Server message of the day")),
                 ("server_motd", new Property<string>("", "Server message of the day")),
                 ("web_portal_url", new Property<string>("", "URL for the web portal")),
                 ("web_portal_api_version", new Property<string>("", "API Version for the web portal")),
