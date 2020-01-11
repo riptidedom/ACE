@@ -1149,7 +1149,7 @@ namespace ACE.Database.Models.Shard
             }
         }
 
-
+        
         // =====================================
         // BiotaPropertiesSkill
         // =====================================

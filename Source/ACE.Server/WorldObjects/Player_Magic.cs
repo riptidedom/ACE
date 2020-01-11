@@ -883,6 +883,11 @@ namespace ACE.Server.WorldObjects
 
                     if (spell.IsHarmful)
                     {
+                        if (targetPlayer != null)
+                        {
+                            this.EnchantmentManager.RemoveRareEnchantments();
+                            targetPlayer.EnchantmentManager.RemoveRareEnchantments();
+                        }                        
                         var resisted = ResistSpell(target, spell, caster);
                         if (resisted == true)
                             break;
@@ -930,6 +935,11 @@ namespace ACE.Server.WorldObjects
                     {
                         if (spell.IsHarmful)
                         {
+                            if (targetPlayer != null)
+                            {
+                                this.EnchantmentManager.RemoveRareEnchantments();
+                                targetPlayer.EnchantmentManager.RemoveRareEnchantments();
+                            }                            
                             var resisted = ResistSpell(target, spell, caster);
                             if (resisted == true)
                                 break;
@@ -987,6 +997,12 @@ namespace ACE.Server.WorldObjects
                     // if negative item spell, can be resisted by the wielder
                     if (spell.IsHarmful)
                     {
+                        if (targetPlayer != null)
+                        {
+                            this.EnchantmentManager.RemoveRareEnchantments();
+                            targetPlayer.EnchantmentManager.RemoveRareEnchantments();
+                        }
+
                         var targetResist = targetCreature;
 
                         if (targetResist == null && target?.WielderId != null)

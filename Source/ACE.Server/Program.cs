@@ -13,6 +13,7 @@ using ACE.DatLoader;
 using ACE.Server.Command;
 using ACE.Server.Managers;
 using ACE.Server.Network.Managers;
+using ACE.Server.Riptide;
 
 namespace ACE.Server
 {
@@ -106,6 +107,9 @@ namespace ACE.Server
             log.Info("Starting PropertyManager...");
             PropertyManager.Initialize();
 
+            log.Info("[Custom Code] Starting CustomPropertyManager...");
+            CustomPropertiesManager.Initialize();
+
             log.Info("Initializing GuidManager...");
             GuidManager.Initialize();
 
@@ -163,6 +167,9 @@ namespace ACE.Server
             // This should be last
             log.Info("Initializing CommandManager...");
             CommandManager.Initialize();
+
+            log.Info("Initializing Riptide API Portal...");
+            GlobalEventManager.AuthWebPortal();
 
             if (!PropertyManager.GetBool("world_closed", false).Item)
             {

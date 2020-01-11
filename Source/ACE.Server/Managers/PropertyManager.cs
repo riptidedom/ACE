@@ -519,7 +519,10 @@ namespace ACE.Server.Managers
                 ("universal_masteries", new Property<bool>(true, "if TRUE, matches end of retail masteries - players wielding almost any weapon get +5 DR, except if the weapon \"seems tough to master\". " +
                                                                  "if FALSE, players start with mastery of 1 melee and 1 ranged weapon type based on heritage, and can later re-select these 2 masteries")),
                 ("use_wield_requirements", new Property<bool>(true, "disable this to bypass wield requirements. mostly for dev debugging")),
-                ("world_closed", new Property<bool>(false, "enable this to startup world as a closed to players world"))
+                ("world_closed", new Property<bool>(false, "enable this to startup world as a closed to players world")),
+                ("world_closed", new Property<bool>(false, "enable this to startup world as a closed to players world")),
+                ("global_pk_kill_messages", new Property<bool>(false, "enable this to make PK kills a global death message.")),
+                ("web_portal_api_killshot_on", new Property<bool>(true, "enable the web API for Killshots"))                
                 );
 
         public static readonly ReadOnlyDictionary<string, Property<long>> DefaultLongProperties =
@@ -528,7 +531,9 @@ namespace ACE.Server.Managers
                 ("mansion_min_rank", new Property<long>(6, "overrides the default allegiance rank required to own a mansion")),
                 ("max_chars_per_account", new Property<long>(11, "retail defaults to 11, client supports up to 20")),
                 ("pk_timer", new Property<long>(20, "the number of seconds where a player cannot perform certain actions (ie. teleporting) after becoming involved in a PK battle")),
-                ("player_save_interval", new Property<long>(300, "the number of seconds between automatic player saves"))
+                ("player_save_interval", new Property<long>(300, "the number of seconds between automatic player saves")),
+                ("logout_timer", new Property<long>(0, "the number of seconds until a player can logout")),
+                ("logout_timer_level_restriction", new Property<long>(0, "the level at which it will force players to have logout timers"))
                 );
 
         public static readonly ReadOnlyDictionary<string, Property<double>> DefaultDoubleProperties =
@@ -560,7 +565,13 @@ namespace ACE.Server.Managers
                 ("popup_header", new Property<string>("Welcome to Asheron's Call!", "Welcome message displayed when you log in")),
                 ("popup_welcome", new Property<string>("To begin your training, speak to the Society Greeter. Walk up to the Society Greeter using the 'W' key, then double-click on her to initiate a conversation.", "Welcome message popup in training halls")),
                 ("popup_motd", new Property<string>("", "Popup message of the day")),
-                ("server_motd", new Property<string>("", "Server message of the day"))
+                ("server_motd", new Property<string>("", "Server message of the day")),
+                ("server_motd", new Property<string>("", "Server message of the day")),
+                ("web_portal_url", new Property<string>("", "URL for the web portal")),
+                ("web_portal_api_version", new Property<string>("", "API Version for the web portal")),
+                ("web_portal_api_username", new Property<string>("", "Username for the API portal")),
+                ("web_portal_api_password", new Property<string>("", "Password for the API portal")),
+                ("web_portal_api_jwt", new Property<string>("", "JWT for the API portal"))                
                 );
     }
 }

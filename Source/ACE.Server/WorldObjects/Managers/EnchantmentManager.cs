@@ -14,6 +14,7 @@ using ACE.Server.Network.GameMessages.Messages;
 using ACE.Server.Network.GameEvent.Events;
 using ACE.Server.Network.Structure;
 using ACE.Server.WorldObjects.Entity;
+using ACE.Server.Riptide;
 
 namespace ACE.Server.WorldObjects.Managers
 {
@@ -367,6 +368,22 @@ namespace ACE.Server.WorldObjects.Managers
             WorldObject.ChangesDetected = true;
         }
 
+        /// <summary>
+        /// Removes rare gem enchantments
+        /// Called when a player is tagged for PK combat
+        /// </summary>
+        public virtual void RemoveRareEnchantments()
+        {
+            List<int> rareSpellIds = new List<int>();
+            foreach (var enumValue in Enum.GetValues(typeof(RareEnchantment)))
+            {
+                rareSpellIds.Add((int)enumValue);
+            }
+
+            var enchantments = WorldObject.Biota.BiotaPropertiesEnchantmentRegistry.Where(e => rareSpellIds.Contains(e.SpellId) ? true : false).ToList();
+            this.Dispel(enchantments);
+        }
+        
         /// <summary>
         /// Returns the vitae enchantment
         /// </summary>

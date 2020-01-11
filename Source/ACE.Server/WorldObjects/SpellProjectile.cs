@@ -358,6 +358,14 @@ namespace ACE.Server.WorldObjects
             if (sourceCreature?.Overpower != null)
                 overpower = Creature.GetOverpower(sourceCreature, target);
 
+            bool isPVP = sourcePlayer != null && targetPlayer != null;
+
+            if (isPVP && Spell.IsHarmful)
+            {
+                sourcePlayer.EnchantmentManager.RemoveRareEnchantments();
+                targetPlayer.EnchantmentManager.RemoveRareEnchantments();
+            }
+
             var resisted = source.ResistSpell(target, Spell, caster);
             if (resisted == true && !overpower)
                 return null;
@@ -384,8 +392,6 @@ namespace ACE.Server.WorldObjects
             }
 
             var absorbMod = GetAbsorbMod(target);
-
-            bool isPVP = sourcePlayer != null && targetPlayer != null;
 
             if (isPVP && Spell.IsHarmful)
                 Player.UpdatePKTimers(sourcePlayer, targetPlayer);

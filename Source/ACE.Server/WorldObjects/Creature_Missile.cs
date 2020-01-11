@@ -11,6 +11,7 @@ using ACE.Server.Managers;
 using ACE.Server.Network.GameMessages.Messages;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Animation;
+using ACE.Server.Riptide;
 using ACE.Server.Physics.Extensions;
 
 namespace ACE.Server.WorldObjects
