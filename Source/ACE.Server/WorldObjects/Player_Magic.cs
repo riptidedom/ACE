@@ -80,6 +80,26 @@ namespace ACE.Server.WorldObjects
             if (CombatMode != CombatMode.Magic)
                 return;
 
+            if (PKTimerActive)
+            {
+                List<int> preventCastOnPKTag = new List<int>();
+                bool spell = false;
+                foreach (var enumValue in Enum.GetValues(typeof(PreventCastOnPKTag)))
+                {
+                    if ((int)enumValue == spellId)
+                    {
+                        spell = true;
+                        break;
+                    }
+                }
+
+                if(spell)
+                {
+                    Session.Network.EnqueueSend(new GameEventWeenieError(Session, WeenieError.YouHaveBeenInPKBattleTooRecently));
+                    return;
+                }
+            }
+
             if (PKLogout)
             {
                 Session.Network.EnqueueSend(new GameEventWeenieError(Session, WeenieError.YouHaveBeenInPKBattleTooRecently));
@@ -233,6 +253,26 @@ namespace ACE.Server.WorldObjects
 
             if (CombatMode != CombatMode.Magic)
                 return;
+
+            if (PKTimerActive)
+            {
+                List<int> preventCastOnPKTag = new List<int>();
+                bool spell = false;
+                foreach (var enumValue in Enum.GetValues(typeof(PreventCastOnPKTag)))
+                {
+                    if ((int)enumValue == spellId)
+                    {
+                        spell = true;
+                        break;
+                    }
+                }
+
+                if (spell)
+                {
+                    Session.Network.EnqueueSend(new GameEventWeenieError(Session, WeenieError.YouHaveBeenInPKBattleTooRecently));
+                    return;
+                }
+            }
 
             if (PKLogout)
             {
