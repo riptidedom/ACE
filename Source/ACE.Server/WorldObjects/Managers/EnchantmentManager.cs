@@ -90,6 +90,9 @@ namespace ACE.Server.WorldObjects.Managers
 
             foreach (var enchantment in enchantments)
             {
+                if (enchantment.SpellId > SpellCategory_Cooldown)
+                    continue;
+
                 var spell = new Spell(enchantment.SpellId);
 
                 if (spell.NotFound)
