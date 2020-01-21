@@ -421,21 +421,18 @@ namespace ACE.Server.WorldObjects
 
                 PKLogout = true;
 
-                var actionChain = new ActionChain();
-                actionChain.AddDelaySeconds((float)pkTimer);
-                var validLandblockId = Location != null ? Location.LandblockId : new LandblockId(0xE74EFFFF); // Ensure valid LandblockId can be aquired, either from player's current location, or the global landblock which should be permaloaded.
-                var validLoadedLandblock = LandblockManager.GetLandblock(validLandblockId, false);
-                // use validLoadedLandblock to ensure action can run. current unknown problem is CurrentLandblock can go null with PKLogoutActive being true causing LogOut_Inner to never execute.
-                if (CurrentLandblock == null)
-                    log.Error($"0x{Guid}:{Name}.LogOut: CurrentLandblock is null");
-                actionChain.AddAction(validLoadedLandblock, () => // TODO: revert validLoadedLandblock to this
-                {
-                    if (CurrentLandblock == null)
-                        log.Error($"0x{Guid}:{Name}.LogOut Delayed Action: CurrentLandblock is null");
-                    LogOut_Inner(clientSessionTerminatedAbruptly);
-                    Session.logOffRequestTime = DateTime.UtcNow;
-                });
-                actionChain.EnqueueChain();
+                //var actionChain = new ActionChain();
+                //actionChain.AddDelaySeconds(20.0f);
+                //actionChain.AddAction(this, () =>
+                //{
+                //    if (CurrentLandblock == null)
+                //        log.Error($"0x{Guid}:{Name}.LogOut Delayed Action: CurrentLandblock is null");
+                //    LogOut_Inner(clientSessionTerminatedAbruptly);
+                //    Session.logOffRequestTime = DateTime.UtcNow;
+                //});
+                //actionChain.EnqueueChain();
+                LogoffTimestamp = Time.GetFutureUnixTime((float)pkTimer);
+                PlayerManager.AddPlayerToLogoffQueue(this);
                 return false;
             }
 
@@ -510,6 +507,13 @@ namespace ACE.Server.WorldObjects
                 // remove the player from landblock management -- after the animation has run
                 logoutChain.AddAction(this, () =>
                 {
+                    if (CurrentLandblock == null)
+                    {
+                        log.Debug($"0x{Guid}:{Name}.LogOut_Inner.logoutChain: CurrentLandblock is null, unable to remove from a landblock...");
+                        if (Location != null)
+                            log.Debug($"0x{Guid}:{Name}.LogOut_Inner.logoutChain: Location is not null, Location = {Location.ToLOCString()}");
+                    }
+
                     CurrentLandblock?.RemoveWorldObject(Guid, false);
                     SetPropertiesAtLogOut();
                     SavePlayerToDatabase();
@@ -529,6 +533,21 @@ namespace ACE.Server.WorldObjects
             }
             else
             {
+                log.Debug($"0x{Guid}:{Name}.LogOut_Inner: CurrentLandblock is null");
+                if (Location != null)
+                {
+                    log.Debug($"0x{Guid}:{Name}.LogOut_Inner: Location is not null, Location = {Location.ToLOCString()}");
+                    var validLoadedLandblock = LandblockManager.GetLandblock(Location.LandblockId, false);
+                    if (validLoadedLandblock.GetObject(Guid.Full) != null)
+                    {
+                        log.Debug($"0x{Guid}:{Name}.LogOut_Inner: Player is still on landblock, removing...");
+                        validLoadedLandblock.RemoveWorldObject(Guid, false);
+                    }
+                    else
+                        log.Debug($"0x{Guid}:{Name}.LogOut_Inner: Player is not found on the landblock Location references.");
+                }
+                else
+                    log.Debug($"0x{Guid}:{Name}.LogOut_Inner: Location is null");
                 SetPropertiesAtLogOut();
                 SavePlayerToDatabase();
                 PlayerManager.SwitchPlayerFromOnlineToOffline(this);
