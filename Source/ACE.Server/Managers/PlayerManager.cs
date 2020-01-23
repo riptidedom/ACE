@@ -73,6 +73,7 @@ namespace ACE.Server.Managers
                 {
                     playersPendingLogoff.RemoveFirst();
                     first.LogOut_Inner();
+                    first.Session.logOffRequestTime = DateTime.UtcNow;
                 }
                 else
                 {
