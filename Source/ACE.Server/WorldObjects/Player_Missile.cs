@@ -1,9 +1,11 @@
 using System;
+using System.Numerics;
 
 using ACE.Entity.Enum;
 using ACE.Server.Entity.Actions;
 using ACE.Server.Network.GameEvent.Events;
 using ACE.Server.Network.GameMessages.Messages;
+using ACE.Server.Physics;
 using ACE.Server.Physics.Animation;
 
 namespace ACE.Server.WorldObjects
@@ -43,9 +45,21 @@ namespace ACE.Server.WorldObjects
             if (CombatMode != CombatMode.Missile)
                 return;
 
+            if (IsBusy)
+            {
+                SendWeenieError(WeenieError.YoureTooBusy);
+                return;
+            }
+
+            if (FastTick && !PhysicsObj.TransientState.HasFlag(TransientStateFlags.OnWalkable))
+            {
+                SendWeenieError(WeenieError.YouCantDoThatWhileInTheAir);
+                return;
+            }
+
             if (PKLogout)
             {
-                Session.Network.EnqueueSend(new GameEventWeenieError(Session, WeenieError.YouHaveBeenInPKBattleTooRecently));
+                SendWeenieError(WeenieError.YouHaveBeenInPKBattleTooRecently);
                 return;
             }
 
@@ -139,8 +153,20 @@ namespace ACE.Server.WorldObjects
             // point of no return beyond this point -- cannot be cancelled
             Attacking = true;
 
+            // get z-angle for aim motion
+            var aimVelocity = GetAimVelocity(target);
+
+            var aimLevel = GetAimLevel(aimVelocity);
+
+            // calculate projectile spawn pos and velocity
+            var localOrigin = GetProjectileSpawnOrigin(ammo.WeenieClassId, aimLevel);
+
+            var velocity = CalculateProjectileVelocity(localOrigin, target, out Vector3 origin, out Quaternion orientation);
+
+            //Console.WriteLine($"Velocity: {velocity}");
+
             var actionChain = new ActionChain();
-            var launchTime = EnqueueMotion(actionChain, MotionCommand.AimLevel);
+            var launchTime = EnqueueMotion(actionChain, aimLevel);
 
             // launch projectile
             actionChain.AddAction(this, () =>
@@ -158,7 +184,7 @@ namespace ACE.Server.WorldObjects
                 UpdateVitalDelta(Stamina, -staminaCost);
 
                 float targetTime = 0.0f;
-                var projectile = LaunchProjectile(weapon, ammo, target, out targetTime);
+                var projectile = LaunchProjectile(weapon, ammo, target, origin, orientation, velocity);
                 UpdateAmmoAfterLaunch(ammo);
             });
 

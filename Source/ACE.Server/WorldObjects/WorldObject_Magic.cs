@@ -1351,7 +1351,7 @@ namespace ACE.Server.WorldObjects
             ProjectileSpeedCache.Clear();
         }
 
-        private static Dictionary<uint, float> ProjectileRadiusCache = new Dictionary<uint, float>();
+        public static Dictionary<uint, float> ProjectileRadiusCache = new Dictionary<uint, float>();
 
         private float GetProjectileRadius(Spell spell)
         {
@@ -1674,5 +1674,17 @@ namespace ACE.Server.WorldObjects
         /// Returns the legendary cantrips from this item's spellbook
         /// </summary>
         public List<BiotaPropertiesSpellBook> LegendaryCantrips => Biota.BiotaPropertiesSpellBook.Where(i => LootTables.LegendaryCantrips.Contains(i.Spell)).ToList();
+
+        private uint? _maxSpellLevel;
+
+        public uint GetMaxSpellLevel()
+        {
+            if (_maxSpellLevel == null)
+            {
+                _maxSpellLevel = Biota.BiotaPropertiesSpellBook.Any() ?
+                    Biota.BiotaPropertiesSpellBook.Select(i => new Spell(i.Spell)).Max(i => i.Formula.Level) : 0;
+            }
+            return _maxSpellLevel.Value;
+        }
     }
 }
